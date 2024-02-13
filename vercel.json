@@ -1,0 +1,10 @@
+{
+    "dashboard": {
+        "url": "http://localhost:5173/dashboard",
+        "title": "My Dashboard"
+      },
+      "dsource": {
+        "url": "http://localhost:5173/dsource",
+        "title": "My Data Source"
+      }
+  }
