@@ -6,3 +6,6 @@
     @apply mx-auto;
     max-width: 1200px;
   }
+  .questionTitleOpen {
+    color: blue; /* Change this to your desired blue color */
+  } 

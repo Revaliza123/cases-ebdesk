@@ -62,15 +62,16 @@ export default function DSource() {
 
   const fetchUsers = () => {
     let url = `https://dummyjson.com/users?limit=${pagination.limit}&skip=${pagination.skip}&select=firstName,lastName,username,email,gender,image`;
-
+  
     if (debouncedSearchQuery) {
       url += `&q=${debouncedSearchQuery}`;
     }
-
+  
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
         if (debouncedSearchQuery) {
+          setUsers(data.users); // Set users to empty array when there's a search query
           setSearchResults(data.users);
         } else {
           setUsers(data.users);
@@ -101,7 +102,7 @@ export default function DSource() {
     if (e.key === 'Enter') {
       fetchUsers();
     }
-    fetch("https://dummyjson.com/users/search?q=John")
+    fetch("https://dummyjson.com/users/search?q=")
       .then((res) => res.json())
       .then(console.log);
     setSearchQuery(e.target.value);
@@ -259,7 +260,7 @@ export default function DSource() {
               </tr>
             </thead>
             <tbody className="text-gray-600">
-              {(searchResults || users).map((user) => (
+            {(searchResults || users).map((user) => (
                 <tr
                   key={user.id}
                   className="border-b border-gray-200 rounded-md shadow-md"

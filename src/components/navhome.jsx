@@ -42,7 +42,7 @@ export default function NavHome() {
               </span>
             </div>
             <div className="flex md:flex md:items-center md:ml-6">
-              <div className="flex items-center justify-center space-x-4">
+              <div className="flex items-center ms-44 space-x-4">
                 <Link
                   to="/"
                   className="hover:text-black text-slate-500 px-3 py-2 rounded-md text-sm font-medium"

@@ -22,7 +22,6 @@ import Subscribe from "../components/subscribe.jsx";
 import Footer from "../components/footer.jsx";
 
 const Home = () => {
-
   const questionTitles = [
     "What do you mean by public-facing usage?",
     "Can I buy more storage for the individual plan?",
@@ -81,7 +80,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section id="chooseUs" className="mb-28">
+      <section id="chooseUs" className="mb-48">
         <h2 className="text-3xl font-bold text-center mt-32">Why choose us?</h2>
         <div className="text-center text-slate-500 mt-5">
           <p>We provide to you the best choices for you. The leading</p>
@@ -128,18 +127,18 @@ const Home = () => {
       </section>
 
       <section id="overview" className="bg-[#2161D5] w-dvw">
-  <div className="container mx-auto">
-    <div className="flex flex-wrap">
-      <div className="flex w-full self-start px-4 lg:w-1/2 mb-16 relative">
-        <img src={dot} alt="tablet" width="70%" className="relative" />
-        <img
-          src={data5}
-          alt="tablet"
-          width="70%"
-          className="lg:ms-[90px] absolute -top-16"
-        />
-      </div>
-      <div className="w-full self-end lg:mt-[200px] px-4 lg:w-1/2 mb-16">
+        <div className="container mx-auto">
+          <div className="flex flex-wrap">
+            <div className="flex w-full self-start px-4 lg:w-1/2 mb-16 relative">
+              <img src={dot} alt="tablet" width="70%" className="relative" />
+              <img
+                src={data5}
+                alt="tablet"
+                width="70%"
+                className="lg:ms-[90px] absolute -top-16"
+              />
+            </div>
+            <div className="w-full self-end lg:mt-[200px] px-4 lg:w-1/2 mb-16">
               <h3 className="text-white font-bold text-3xl lg:text-4xl mb-6">
                 App Overview1
               </h3>
@@ -391,41 +390,47 @@ const Home = () => {
       </section>
 
       <section id="question">
-        <h2 className="text-3xl font-bold text-center mt-32 mb-14 md:mt-14 md:mb-14">
-          Frequently Asked Questions
-        </h2>
-        <div className="container mx-auto">
-        {questionTitles.map((title, index) => (
-          <div  key={index} className="flex justify-center mb-5">
-            <div className="flex-shrink-0 w-3/6 bg-white p-6 rounded-lg border">
-              <div className="flex justify-between">
-                <p className="text-black font-sans font-semibold mb-4">
-                {title}
-                </p>
-                <button
-                  className="py-2 px-4 rounded-full transition duration-300 ease-in-out"
-                  onClick={() => handleToggleDescription(`question${index + 1}`)}
-                >
-                  <FontAwesomeIcon
-                    icon={faPlus}
-                    className="text-black mr-4"
-                  />
-                </button>
-              </div>
-              {showDescriptions[`question${index + 1}`] && (
-                <p className="description">
-                  We define public-facing usage as leveraging CARTO to power
-                  enterprise-scale applications that are made available to
-                  external parties such as clients or the public, as opposed to
-                  internal demonstration-only applications.
-                </p>
-              )}
-            </div>
+  <h2 className="text-3xl font-bold text-center mt-32 mb-14 md:mt-14 md:mb-14">
+    Frequently Asked Questions
+  </h2>
+  <div className="container mx-auto">
+    {questionTitles.map((title, index) => (
+      <div className="flex justify-center mb-5" key={index}>
+        <div className="flex-shrink-0 w-3/6 bg-white p-6 rounded-lg border">
+          <div className="flex justify-between">
+            <p
+              className={`text-black font-sans font-semibold mb-4 ${showDescriptions[`question${index + 1}`] ? 'questionTitleOpen' : ''}`}
+              onClick={() =>
+                handleToggleDescription(`question${index + 1}`)
+              }
+            >
+              {title}
+            </p>
+            <button
+              className="py-2 px-4 rounded-full transition duration-300 ease-in-out"
+              onClick={() =>
+                handleToggleDescription(`question${index + 1}`)
+              }
+            >
+              <FontAwesomeIcon
+                icon={faPlus}
+                className={`text-black mr-4 ${showDescriptions[`question${index + 1}`] ? 'questionTitleOpen' : ''}`}
+              />
+            </button>
           </div>
-          ))}
+          {showDescriptions[`question${index + 1}`] && (
+            <p className="description">
+              We define public-facing usage as leveraging CARTO to power
+              enterprise-scale applications that are made available to
+              external parties such as clients or the public, as opposed
+              to internal demonstration-only applications.
+            </p>
+          )}
         </div>
-      </section>
-
+      </div>
+    ))}
+  </div>
+</section>
       <Subscribe />
       <Footer />
     </>

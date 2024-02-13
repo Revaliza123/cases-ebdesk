@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import logo from "../assets/Vector.png";
+import logo from "../assets/profil.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHamburger, faMoon, faSearch } from "@fortawesome/free-solid-svg-icons";
 
@@ -51,7 +51,7 @@ export default function Navbar() {
         onClick={toggleDropdown}
       >
         {/* Foto Profil */}
-        <FontAwesomeIcon icon={faMoon} className="text-gray-500 mr-4" />
+      <FontAwesomeIcon icon={faMoon} className="text-gray-500 mr-4" />
         <div className="w-8 h-8 rounded-md overflow-hidden cursor-pointer">
           <img
             src={logo}
