@@ -100,7 +100,6 @@ export default function DSource() {
 
   const handleSearch = (e) => {
     if (e.key === 'Enter') {
-      fetchUsers();
     }
     fetch("https://dummyjson.com/users/search?q=")
       .then((res) => res.json())
