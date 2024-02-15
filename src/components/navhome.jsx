@@ -5,6 +5,14 @@ import logof from "../assets/Vector.png";
 export default function NavHome() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleMenuClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
   return (
     <nav className="container bg-transparent top-0 z-10">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 ">
@@ -12,7 +20,7 @@ export default function NavHome() {
           <div className="absolute inset-y-0 left-0 flex items-center md:hidden">
             <button
               className="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-gray-500   transition duration-150 ease-in-out"
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={handleMenuClick}
             >
               <svg
                 className="h-6 w-6"
@@ -28,54 +36,55 @@ export default function NavHome() {
               </svg>
             </button>
           </div>
-          <div className="flex items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="flex-shrink-0 flex items-center">
-              <Link to="/">
-                <img
-                  className="hidden lg:block h-8 w-auto"
-                  src={logof}
-                  alt="Logo"
-                />
+
+          <div className="flex items-center">
+            <Link to="/">
+              <img
+                className="hidden md:block lg:h-8 lg:w-auto md:h-6 md:w-auto h-8 w-auto"
+                src={logof}
+                alt="Logo"
+              />
+            </Link>
+            <span className="hidden md:block text-black ml-2 font-bold">
+              <Link to="/">Logoipsum</Link>
+            </span>
+          </div>
+
+          <div className="hidden md:flex md:items-center md:ml-6 ">
+            <div className="flex items-center space-x-4">
+              <Link
+                to="/"
+                className="hover:text-black text-slate-500 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Home
               </Link>
-              <span className="hidden lg:block text-black ml-2 font-bold">
-                <Link to="/">Logoipsum</Link>
-              </span>
-            </div>
-            <div className="flex md:flex md:items-center md:ml-6">
-              <div className="flex items-center ms-44 space-x-4">
-                <Link
-                  to="/"
-                  className="hover:text-black text-slate-500 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Home
-                </Link>
-                <Link
-                  to="/product"
-                  className="hover:text-black text-slate-500 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Product
-                </Link>
-                <Link
-                  to="#pricing"
-                  className="hover:text-black text-slate-500 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Pricing
-                </Link>
-                <Link
-                  to="/contact"
-                  className="hover:text-black text-slate-500 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Contact
-                </Link>
-                <Link
-                  to="/about"
-                  className="hover:text-black text-slate-500 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  About Us
-                </Link>
-              </div>
+              <Link
+                to="/product"
+                className="hover:text-black text-slate-500 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Product
+              </Link>
+              <Link
+                to="#pricing"
+                className="hover:text-black text-slate-500 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Pricing
+              </Link>
+              <Link
+                to="/contact"
+                className="hover:text-black text-slate-500 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Contact
+              </Link>
+              <Link
+                to="/about"
+                className="hover:text-black text-slate-500 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                About Us
+              </Link>
             </div>
           </div>
+
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <Link
               to="/login"
@@ -98,29 +107,42 @@ export default function NavHome() {
           <div className="px-2 pt-2 pb-3 space-y-1 text-center">
             <Link
               to="/"
-              className="hover:text-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
+              className="hover:text-gray-900 text-slate-400 block px-3 py-2 rounded-md text-base font-medium"
+              onClick={closeMenu}
             >
               Home
             </Link>
             <Link
               to="/product"
-              className="text-white hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
+              className="text-slate-400 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
+              onClick={closeMenu}
             >
               Product
             </Link>
             <Link
-              to="/pricing"
-              className="text-white hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
+              to="#pricing"
+              className="text-slate-400 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
+              onClick={closeMenu}
             >
               Pricing
             </Link>
             <Link
               to="/contact"
-              className="text-white hover:text-gray-900 block px-3 py-2 rounded">
+              className="text-slate-400 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
+              onClick={closeMenu}
+            >
+              Contact
             </Link>
+            <Link
+              to="/about"
+              className="hover:text-gray-900 text-slate-500 px-3 py-2 rounded-md text-sm font-medium"
+              onClick={closeMenu}
+            >
+              About Us
+            </Link>
+          </div>
         </div>
-      </div>
-    )}
-  </nav>
-  )
+      )}
+    </nav>
+  );
 }
