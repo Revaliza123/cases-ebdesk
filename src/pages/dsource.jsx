@@ -38,8 +38,7 @@ export default function DSource() {
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [searchResults, setSearchResults] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
-  const [previousSearchQuery, setPreviousSearchQuery] = useState("");
-  const [previousIsSearching, setPreviousIsSearching] = useState(false);
+  const [dataToDisplay, setDataToDisplay] = useState(users);
   const [isModalOpen, setModalOpen] = useState(false);
   const [newUserData, setNewUserData] = useState({
     firstName: "",
@@ -60,8 +59,14 @@ export default function DSource() {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   useEffect(() => {
-    fetchUsers();
-  }, [pagination, debouncedSearchQuery]);
+    if (debouncedSearchQuery) {
+      // If there is a search query, show the search results
+      setDataToDisplay(searchResults || []);
+    } else {
+      // If there is no search query, show the original data
+      setDataToDisplay(users);
+    }
+  }, [debouncedSearchQuery, users, searchResults]);
 
   const fetchUsers = () => {
     let url = `https://dummyjson.com/users?limit=${pagination.limit}&skip=${pagination.skip}&select=firstName,lastName,username,email,gender,image`;
@@ -99,20 +104,20 @@ export default function DSource() {
   };
 
  // Perbarui fungsi handleSearch
-const handleSearch = (e) => {
+ const handleSearch = (e) => {
   const searchTerm = e.target.value;
 
   if (searchTerm.trim() === "") {
-    // Jika kotak pencarian kosong, kembalikan ke tampilan normal
+    // Jika kotak pencarian kosong, jangan fetch data awal
     setSearchResults(null);
     setIsSearching(false);
   } else {
     // Jika ada kata kunci pencarian, ambil data berdasarkan kata kunci
+    setIsSearching(true);
     fetch(`https://dummyjson.com/users/search?q=${searchTerm}`)
       .then((res) => res.json())
       .then((data) => {
         setSearchResults(data.users);
-        setIsSearching(true);
       })
       .catch((error) => console.error("Error searching users:", error));
   }
@@ -273,9 +278,7 @@ const handleSearch = (e) => {
               </tr>
             </thead>
             <tbody className="text-gray-600">
-              {((searchResults && isSearching) ||
-                (!searchResults && !isSearching)) &&
-                (searchResults || users).map((user) => (
+            {(dataToDisplay || []).map((user) => (
                   <tr
                     key={user.id}
                     className="border-b border-gray-200 rounded-md shadow-md"
