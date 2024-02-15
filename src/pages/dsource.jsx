@@ -38,7 +38,7 @@ export default function DSource() {
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [searchResults, setSearchResults] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
-  const [dataToDisplay, setDataToDisplay] = useState(users);
+const [dataToDisplay, setDataToDisplay] = useState(users);
   const [isModalOpen, setModalOpen] = useState(false);
   const [newUserData, setNewUserData] = useState({
     firstName: "",
@@ -59,14 +59,8 @@ export default function DSource() {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   useEffect(() => {
-    if (debouncedSearchQuery) {
-      // If there is a search query, show the search results
-      setDataToDisplay(searchResults || []);
-    } else {
-      // If there is no search query, show the original data
-      setDataToDisplay(users);
-    }
-  }, [debouncedSearchQuery, users, searchResults]);
+    fetchUsers();
+  }, [pagination, debouncedSearchQuery]);
 
   const fetchUsers = () => {
     let url = `https://dummyjson.com/users?limit=${pagination.limit}&skip=${pagination.skip}&select=firstName,lastName,username,email,gender,image`;
@@ -278,7 +272,9 @@ export default function DSource() {
               </tr>
             </thead>
             <tbody className="text-gray-600">
-            {(dataToDisplay || []).map((user) => (
+              {((searchResults && isSearching) ||
+                (!searchResults && !isSearching)) &&
+                (searchResults || users).map((user) => (
                   <tr
                     key={user.id}
                     className="border-b border-gray-200 rounded-md shadow-md"
