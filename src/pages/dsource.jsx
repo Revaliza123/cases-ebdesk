@@ -37,10 +37,13 @@ export default function DSource() {
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [searchResults, setSearchResults] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const [previousSearchQuery, setPreviousSearchQuery] = useState("");
+  const [previousIsSearching, setPreviousIsSearching] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [newUserData, setNewUserData] = useState({
     firstName: "",
-    lastName: "", 
+    lastName: "",
     username: "",
     email: "",
     gender: "",
@@ -62,16 +65,15 @@ export default function DSource() {
 
   const fetchUsers = () => {
     let url = `https://dummyjson.com/users?limit=${pagination.limit}&skip=${pagination.skip}&select=firstName,lastName,username,email,gender,image`;
-  
-    if (debouncedSearchQuery) {
+
+    if (debouncedSearchQuery && pagination.skip) {
       url += `&q=${debouncedSearchQuery}`;
     }
-  
+
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
         if (debouncedSearchQuery) {
-          setUsers(data.users); // Set users to empty array when there's a search query
           setSearchResults(data.users);
         } else {
           setUsers(data.users);
@@ -85,28 +87,39 @@ export default function DSource() {
   };
 
   const handlePageChange = (action) => {
-    if (action === "prev") {
-      setPagination({
-        ...pagination,
-        skip: Math.max(0, pagination.skip - pagination.limit),
-      });
-    } else if (action === "next") {
-      setPagination({
-        ...pagination,
-        skip: pagination.skip + pagination.limit,
-      });
-    }
+    setPagination((prevPagination) => {
+      let newSkip;
+      if (action === "prev") {
+        newSkip = Math.max(0, prevPagination.skip - prevPagination.limit);
+      } else if (action === "next") {
+        newSkip = prevPagination.skip + prevPagination.limit;
+      }
+      return { ...prevPagination, skip: newSkip };
+    });
   };
 
-  const handleSearch = (e) => {
-    if (e.key === 'Enter') {
-         fetch("https://dummyjson.com/users/search?q=")
+ // Perbarui fungsi handleSearch
+const handleSearch = (e) => {
+  const searchTerm = e.target.value;
+
+  if (searchTerm.trim() === "") {
+    // Jika kotak pencarian kosong, kembalikan ke tampilan normal
+    setSearchResults(null);
+    setIsSearching(false);
+  } else {
+    // Jika ada kata kunci pencarian, ambil data berdasarkan kata kunci
+    fetch(`https://dummyjson.com/users/search?q=${searchTerm}`)
       .then((res) => res.json())
-      .then(console.log);
-    }
-    setSearchQuery(e.target.value);
-  };
+      .then((data) => {
+        setSearchResults(data.users);
+        setIsSearching(true);
+      })
+      .catch((error) => console.error("Error searching users:", error));
+  }
 
+  setSearchQuery(searchTerm);
+};
+  
   const openModal = () => {
     setModalOpen(true);
   };
@@ -212,6 +225,7 @@ export default function DSource() {
   };
 
   return (
+
     <div className="flex">
       <Sidebar />
       <div className="flex-1 bg-slate-100">
@@ -259,76 +273,78 @@ export default function DSource() {
               </tr>
             </thead>
             <tbody className="text-gray-600">
-            {(searchResults || users).map((user) => (
-                <tr
-                  key={user.id}
-                  className="border-b border-gray-200 rounded-md shadow-md"
-                >
-                  <td className="py-2 px-4">{user.id}</td>
-                  <td className="py-2 px-4">
-                    <div className="flex items-center">
-                      <img
-                        src={user.image}
-                        alt="User"
-                        loading="lazy"
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <span className="ml-2">
-                        {user.firstName} {user.lastName}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="py-2 px-4">{user.username}</td>
-                  <td className="py-2 px-4">{user.email}</td>
-                  <td className="py-2 px-4">{user.gender}</td>
-                  <td className="py-2 px-4">
-                    <div className="relative inline-block text-left">
-                      <button
-                        className="flex items-center justify-center w-6 h-6"
-                        onClick={() => handleEllipsisClick(user)}
-                      >
-                        <FontAwesomeIcon
-                          icon={faEllipsis}
-                          className="text-gray-500"
+              {((searchResults && isSearching) ||
+                (!searchResults && !isSearching)) &&
+                (searchResults || users).map((user) => (
+                  <tr
+                    key={user.id}
+                    className="border-b border-gray-200 rounded-md shadow-md"
+                  >
+                    <td className="py-2 px-4">{user.id}</td>
+                    <td className="py-2 px-4">
+                      <div className="flex items-center">
+                        <img
+                          src={user.image}
+                          alt="User"
+                          loading="lazy"
+                          className="w-8 h-8 rounded-full"
                         />
-                      </button>
-                      {selectedUser && selectedUser.id === user.id && (
-                        <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                          <div
-                            className="py-1"
-                            role="menu"
-                            aria-orientation="vertical"
-                            aria-labelledby="options-menu"
-                          >
-                            <button
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                              role="menuitem"
-                              onClick={() => openEditModal(user)}
+                        <span className="ml-2">
+                          {user.firstName} {user.lastName}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="py-2 px-4">{user.username}</td>
+                    <td className="py-2 px-4">{user.email}</td>
+                    <td className="py-2 px-4">{user.gender}</td>
+                    <td className="py-2 px-4">
+                      <div className="relative inline-block text-left">
+                        <button
+                          className="flex items-center justify-center w-6 h-6"
+                          onClick={() => handleEllipsisClick(user)}
+                        >
+                          <FontAwesomeIcon
+                            icon={faEllipsis}
+                            className="text-gray-500"
+                          />
+                        </button>
+                        {selectedUser && selectedUser.id === user.id && (
+                          <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            <div
+                              className="py-1"
+                              role="menu"
+                              aria-orientation="vertical"
+                              aria-labelledby="options-menu"
                             >
-                              <FontAwesomeIcon
-                                icon={faEdit}
-                                className="text-black mr-4"
-                              />
-                              Edit
-                            </button>
-                            <button
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                              role="menuitem"
-                              onClick={openDeleteModal}
-                            >
-                              <FontAwesomeIcon
-                                icon={faTrash}
-                                className="text-black mr-4"
-                              />
-                              Delete
-                            </button>
+                              <button
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                role="menuitem"
+                                onClick={() => openEditModal(user)}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faEdit}
+                                  className="text-black mr-4"
+                                />
+                                Edit
+                              </button>
+                              <button
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                role="menuitem"
+                                onClick={openDeleteModal}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faTrash}
+                                  className="text-black mr-4"
+                                />
+                                Delete
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
 
@@ -570,4 +586,4 @@ export default function DSource() {
       </div>
     </div>
   );
-}
+};
