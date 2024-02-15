@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { createBrowserRouter, Route, Routes } from "react-router-dom";
 
 import Home from "./pages/Home.jsx";
